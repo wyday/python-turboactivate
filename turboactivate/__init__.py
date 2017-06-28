@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013, 2014 Develer S.r.l. (http://www.develer.com/)
+# Copyright 2013, 2014 Develer S.r.l. (https://www.develer.com/)
+# Copyright 2017 wyDay, LLC (https://wyday.com/)
 #
 # Author: Lorenzo Villani <lvillani@develer.com>
 # Author: Riccardo Ferrazzo <rferrazz@develer.com>
+# Author: Wyatt O'Day <wyatt@wyday.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -102,7 +104,7 @@ class TurboActivate(object):
         self._dat_file = wstr(dat_file)
 
         try:
-            self._lib.PDetsFromPath(self._dat_file)
+            self._lib.TA_PDetsFromPath(self._dat_file)
         except TurboActivateFailError:
             # The dat file is already loaded
             pass
@@ -310,11 +312,7 @@ class TurboActivate(object):
 
         The directory you pass in must already exist. And the process using TurboActivate
         must have permission to create, write, and delete files in that directory.
-
-        On linux it is not available
         """
-        if sys.platform.startswith('linux'):
-            raise RuntimeError("set_custom_path is not available under linux")
 
         self._lib.TA_SetCustomActDataPath(wstr(path))
 
@@ -330,10 +328,10 @@ class TurboActivate(object):
 
         If the port is not specified, TurboActivate will default to using port 1080 for proxies.
         """
-        self._lib.SetCustomProxy(wstr(address))
+        self._lib.TA_SetCustomProxy(wstr(address))
 
     def _set_restype(self):
-        self._lib.PDetsFromPath.restype = validate_result
+        self._lib.TA_PDetsFromPath.restype = validate_result
         self._lib.TA_UseTrial.restype = validate_result
         self._lib.TA_GetPKey.restype = validate_result
         self._lib.TA_CheckAndSavePKey.restype = validate_result
@@ -350,8 +348,5 @@ class TurboActivate(object):
         self._lib.TA_TrialDaysRemaining.restype = validate_result
         self._lib.TA_ExtendTrial.restype = validate_result
         self._lib.TA_IsDateValid.restype = validate_result
-        self._lib.SetCustomProxy.restype = validate_result
-
-        # SetCustomActDataPath is not defined under linux
-        if not sys.platform.startswith('linux'):
-            self._lib.TA_SetCustomActDataPath.restype = validate_result
+        self._lib.TA_SetCustomProxy.restype = validate_result
+        self._lib.TA_SetCustomActDataPath.restype = validate_result
