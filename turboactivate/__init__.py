@@ -29,7 +29,7 @@ from datetime import datetime
 
 from ctypes import pointer, sizeof, c_uint32
 
-from c_wrapper import *
+from turboactivate.c_wrapper import *
 
 #
 # Object oriented interface
