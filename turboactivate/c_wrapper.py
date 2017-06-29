@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013, 2014 Develer S.r.l. (http://www.develer.com/)
+# Copyright 2013, 2014 Develer S.r.l. (https://www.develer.com/)
+# Copyright 2017 wyDay, LLC (https://wyday.com/)
 #
 # Author: Lorenzo Villani <lvillani@develer.com>
 # Author: Riccardo Ferrazzo <rferrazz@develer.com>
+# Author: wyDay, LLC <support@wyday.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -167,13 +169,14 @@ class ACTIVATE_OPTIONS(Structure):
 
 
 def load_library(path):
-    LIBRARIES = {
-        'linux2': ospath.join(path, 'libTurboActivate.so'),
-        'darwin': ospath.join(path, 'libTurboActivate.dylib'),
-        'win32': ospath.join(path, 'TurboActivate.dll'),
-    }
 
-    return cdll.LoadLibrary(LIBRARIES[sys.platform])
+    if sys.platform == 'win32':
+        return cdll.LoadLibrary(ospath.join(path, 'TurboActivate.dll'))
+    elif sys.platform == 'darwin':
+        return cdll.LoadLibrary(ospath.join(path, 'libTurboActivate.dylib'))
+
+    # else: linux, bsd, etc.
+    return cdll.LoadLibrary(ospath.join(path, 'libTurboActivate.so'))
 
 
 def validate_result(return_code):
@@ -184,8 +187,6 @@ def validate_result(return_code):
     # Raise an exception type appropriate for the kind of error
     if return_code == TA_FAIL:
         raise TurboActivateFailError()
-    elif return_code == TA_E_FEATURES_CHANGED:
-        raise TurboActivateFeaturesChangedError()
     elif return_code == TA_E_PDETS:
         raise TurboActivateDatFileError()
     elif return_code == TA_E_EDATA_LONG:
@@ -344,16 +345,6 @@ class TurboActivatePermissionError(TurboActivateError):
     Insufficient system permission. Either start your process as an
     admin / elevated user or call the function again with the
     TA_USER flag instead of the TA_SYSTEM flag.
-    """
-    pass
-
-
-class TurboActivateFeaturesChangedError(TurboActivateError):
-
-    """
-    If IsGenuine() or IsGenuineEx() reactivated and the features
-    have changed, then this will be the return code. Treat this
-    as a success.
     """
     pass
 
