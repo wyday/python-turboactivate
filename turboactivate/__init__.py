@@ -5,7 +5,7 @@
 #
 # Author: Lorenzo Villani <lvillani@develer.com>
 # Author: Riccardo Ferrazzo <rferrazz@develer.com>
-# Author: Wyatt O'Day <wyatt@wyday.com>
+# Author: wyDay, LLC <support@wyday.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,42 +37,8 @@ from turboactivate.c_wrapper import *
 # Object oriented interface
 #
 
-
-class GenuineOptions(object):
-
-    """A set of options to use with is_genuine()"""
-
-    FLAG_SKIP_OFFLINE = 0x00000001
-    FLAG_OFFLINE_SHOW_INET_ERR = 0x00000002
-
-    def __init__(self, flags=0, grace_days=0, days_between_checks=0):
-        self._flags = flags
-        self._grace_days = grace_days
-        self._days_between_checks = days_between_checks
-
-    def get_pointer(self):
-        options = GENUINE_OPTIONS(sizeof(GENUINE_OPTIONS()),
-                                  self._flags,
-                                  self._days_between_checks,
-                                  self._grace_days)
-        return pointer(options)
-
-    def flags(self, flags):
-        self._flags = flags
-
-    def grace_days(self, days):
-        """
-        If the call fails because of an internet error,
-        how long, in days, should the grace period last (before
-        returning deactivating and returning TA_FAIL).
-
-        14 days is recommended.
-        """
-        self._grace_days = days
-
-    def days_between_checks(self, days):
-        """How often to contact the LimeLM servers for validation. 90 days recommended."""
-        self._days_between_checks = days
+class IsGenuineResult:
+    Genuine, GenuineFeaturesChanged, NotGenuine, NotGenuineInVM, InternetError = range(5)
 
 
 class TurboActivate(object):
@@ -81,7 +47,22 @@ class TurboActivate(object):
         self._lib = load_library(library_folder)
         self._set_restype()
 
-        self.set_current_product(dat_file, guid, mode=mode)
+        self._mode = mode
+        self._dat_file = wstr(dat_file)
+
+        try:
+            self._lib.TA_PDetsFromPath(self._dat_file)
+        except TurboActivateFailError:
+            # The dat file is already loaded
+            pass
+
+        self._handle = self._lib.TA_GetHandle(wstr(guid))
+
+        # if the handle is still unset then immediately throw an exception
+        # telling the user that they need to actually load the correct
+        # TurboActivate.dat and/or use the correct GUID for the TurboActivate.dat
+        if self._handle == 0:
+            raise TurboActivateDatFileError()
 
     #
     # Public
@@ -95,25 +76,10 @@ class TurboActivate(object):
 
         self._lib.TA_UseTrial(self._handle, flags, None)
 
-    def set_current_product(self, dat_file, guid, mode=TA_USER):
-        """
-        This functions allows you to use licensing for multiple products within
-        the same running process.
-        """
-        self._mode = mode
-        self._dat_file = wstr(dat_file)
-
-        try:
-            self._lib.TA_PDetsFromPath(self._dat_file)
-        except TurboActivateFailError:
-            # The dat file is already loaded
-            pass
-
-        self._handle = self._lib.TA_GetHandle(wstr(guid))
 
     # Product key
 
-    def product_key(self):
+    def get_pkey(self):
         """
         Gets the stored product key. NOTE: if you want to check if a product key is valid
         simply call is_product_key_valid().
@@ -128,14 +94,14 @@ class TurboActivate(object):
         except TurboActivateProductKeyError as e:
             return None
 
-    def set_product_key(self, product_key):
+    def check_and_save_pkey(self, product_key):
         """Checks and saves the product key."""
         self._lib.TA_CheckAndSavePKey(self._handle, wstr(product_key), self._mode)
 
     def is_product_key_valid(self):
         """
         Checks if the product key installed for this product is valid. This does NOT check if
-        the product key is activated or genuine. Use is_activated() and is_genuine() instead.
+        the product key is activated or genuine. Use is_activated() and is_genuine_ex() instead.
         """
         try:
             self._lib.TA_IsProductKeyValid(self._handle)
@@ -225,35 +191,69 @@ class TurboActivate(object):
 
     def get_feature_value(self, name):
         """Gets the value of a feature."""
-        buf_size = self._lib.GetFeatureValue(wstr(name), 0, 0)
+        buf_size = self._lib.TA_GetFeatureValue(self._handle, wstr(name), 0, 0)
         buf = wbuf(buf_size)
 
-        self._lib.GetFeatureValue(wstr(name), buf, buf_size)
+        self._lib.TA_GetFeatureValue(self._handle, wstr(name), buf, buf_size)
 
         return buf.value
 
     # Genuine
 
-    def is_genuine(self, options=None):
+    def is_genuine(self):
         """
         Checks whether the computer is genuinely activated by verifying with the LimeLM servers.
         If reactivation is needed then it will do this as well.
-        Optionally you can pass a GenuineOptions object to specify more details
         """
-        fn = self._lib.TA_IsGenuine
-        args = [self._handle]
+        ret = self._lib.TA_IsGenuine(self._handle)
 
-        if options:
-            fn = self._lib.TA_IsGenuineEx
+        if ret == TA_OK:
+            return IsGenuineResult.Genuine
+        elif ret in {TA_FAIL, TA_E_REVOKED, TA_E_ACTIVATE}:
+            return IsGenuineResult.NotGenuine
+        elif ret == TA_E_INET:
+            return IsGenuineResult.InternetError
+        elif ret == TA_E_IN_VM:
+            return IsGenuineResult.NotGenuineInVM
+        elif ret == TA_E_FEATURES_CHANGED:
+            return IsGenuineResult.GenuineFeaturesChanged
 
-            args.append(options.get_pointer())
+        validate_result(ret)
 
-        try:
-            fn(*args)
+    # IsGenuineEx
 
-            return True
-        except TurboActivateFeaturesChangedError:
-            return True
+    def is_genuine_ex(self, days_between_checks, grace_days_on_inet_err, skip_offline = False, offline_show_inet_err = False):
+        """
+        Checks whether the computer is genuinely activated by verifying with the LimeLM servers.
+        If reactivation is needed then it will do this as well.
+        """
+        flags = 0
+
+        if skip_offline:
+            flags = TA_SKIP_OFFLINE
+
+        if offline_show_inet_err:
+            flags = flags | TA_OFFLINE_SHOW_INET_ERR
+
+        options = GENUINE_OPTIONS(sizeof(GENUINE_OPTIONS()),
+                                  flags,
+                                  days_between_checks,
+                                  grace_days_on_inet_err)
+
+        ret = self._lib.TA_IsGenuineEx(self._handle, pointer(options))
+
+        if ret == TA_OK:
+            return IsGenuineResult.Genuine
+        elif ret in {TA_FAIL, TA_E_REVOKED, TA_E_ACTIVATE}:
+            return IsGenuineResult.NotGenuine
+        elif ret in {TA_E_INET, TA_E_INET_DELAYED}:
+            return IsGenuineResult.InternetError
+        elif ret == TA_E_IN_VM:
+            return IsGenuineResult.NotGenuineInVM
+        elif ret == TA_E_FEATURES_CHANGED:
+            return IsGenuineResult.GenuineFeaturesChanged
+
+        validate_result(ret)
 
     # Trial
 
@@ -296,7 +296,7 @@ class TurboActivate(object):
         except TurboActivateError:
             return False
 
-    def set_custom_path(self, path):
+    def set_custom_act_data_path(self, path):
         """
         This function allows you to set a custom folder to store the activation
         data files. For normal use we do not recommend you use this function.
@@ -343,8 +343,6 @@ class TurboActivate(object):
         self._lib.TA_ActivateFromFile.restype = validate_result
         self._lib.TA_GetExtraData.restype = validate_result
         self._lib.TA_IsActivated.restype = validate_result
-        self._lib.TA_IsGenuine.restype = validate_result
-        self._lib.TA_IsGenuineEx.restype = validate_result
         self._lib.TA_TrialDaysRemaining.restype = validate_result
         self._lib.TA_ExtendTrial.restype = validate_result
         self._lib.TA_IsDateValid.restype = validate_result
