@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## 4.1.1 - 2017-07-XX
+
+* Works with latest version of TurboActivate (4.1.x) and newer.
+* Add support for Python 3.x+.
+* Handle an incorrect VersionGUID immediately in the TurboActivate constructor.
+* Remove redundant "GenuineOptions" class (nearly identical structure to GENUINE_OPTIONS).
+* `turboactivate.is_genuine` is split into 2 separate functions (for good reason --
+  they should be used in completely separate contexts)
+* `is_genuine` and `is_genuine_ex` now return an IsGenuineResult instead of raising exceptions.
+* Remove useless helper function, and put it in the TurboActivate constructor.
+* Make the Python TurboActivate class match other object-oriented examples.
+* Fix Linux support in Python 3.3+ (no longer uses the "linux2" identifier --
+  now uses "linux"). Also add support for BSD, etc. and remove old cruft.
+* Make a first class language integration with LimeLM (meaning supported with
+  the help of wyDay).
+* Changed the version scheme to match that of the TurboActivate API (it will now match, or slightly trail the TurboActivate API).
+
+
 ## 1.0.4 - 2016-01-27
 
 ### Changed
