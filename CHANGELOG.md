@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 * Works with latest version of TurboActivate (4.1.x) and newer.
 * Add support for Python 3.x+.
+* Completely re-vamp the example app to be more "copy-paste" ready for existing Python apps.
 * Handle an incorrect VersionGUID immediately in the TurboActivate constructor.
 * Remove redundant "GenuineOptions" class (nearly identical structure to GENUINE_OPTIONS).
 * `turboactivate.is_genuine` is split into 2 separate functions (for good reason --
