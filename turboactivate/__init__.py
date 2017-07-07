@@ -25,10 +25,6 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 
-import sys
-
-from datetime import datetime
-
 from ctypes import pointer, sizeof, c_uint32
 
 from turboactivate.c_wrapper import *
@@ -112,7 +108,7 @@ class TurboActivate(object):
 
     # Activation status
 
-    def deactivate(self, erase_p_key=True, deactivation_request_file=""):
+    def deactivate(self, erase_p_key=False, deactivation_request_file=""):
         """
         Deactivates the product on this computer. Set erase_p_key to True to erase the stored
         product key, False to keep the product key around. If you're using deactivate to let
@@ -133,7 +129,7 @@ class TurboActivate(object):
         except TurboActivateNotActivatedError:
             return
 
-    def activate(self, activation_request_file=""):
+    def activate(self, extra_data=""):
         """
         Activates the product on this computer. You must call set_product_key()
         with a valid product key or have used the TurboActivate wizard sometime
@@ -141,22 +137,45 @@ class TurboActivate(object):
         If activation_request_file is specified, then it gets the "activation request"
         file for offline activation.
         """
-        if self.is_activated():
-            return False
 
-        fn = self._lib.TA_ActivationRequestToFile if activation_request_file else self._lib.TA_Activate
-        args = [wstr(activation_request_file)] if activation_request_file else []
+        if extra_data:
+            options = ACTIVATE_OPTIONS(sizeof(ACTIVATE_OPTIONS()),
+                                      wstr(extra_data))
 
-        args.append(None)
+            args = pointer(options)
+        else:
+            args = None
 
         try:
-            fn(self._handle, *args)
+            self._lib.TA_Activate(self._handle, args)
 
             return True
         except TurboActivateError as e:
-            if not activation_request_file:
-                self.deactivate(True)
+            raise e
 
+    def activation_request_to_file(self, filename, extra_data=""):
+        """
+        Activates the product on this computer. You must call set_product_key()
+        with a valid product key or have used the TurboActivate wizard sometime
+        before calling this function.
+        If activation_request_file is specified, then it gets the "activation request"
+        file for offline activation.
+        """
+        args = [wstr(filename)]
+
+        if extra_data:
+            options = ACTIVATE_OPTIONS(sizeof(ACTIVATE_OPTIONS()),
+                                      wstr(extra_data))
+
+            args.append(pointer(options))
+        else:
+            args.append(None)
+
+        try:
+            self._lib.TA_ActivationRequestToFile(self._handle, *args)
+
+            return True
+        except TurboActivateError as e:
             raise e
 
     def activate_from_file(self, filename):
@@ -177,12 +196,16 @@ class TurboActivate(object):
 
     def is_activated(self):
         """ Checks whether the computer has been activated."""
-        try:
-            self._lib.TA_IsActivated(self._handle)
 
+        ret = self._lib.TA_IsActivated(self._handle)
+
+        if ret == TA_OK:
             return True
-        except TurboActivateError:
+        elif ret == TA_FAIL:
             return False
+
+        # raise an error on all other return codes
+        validate_result(ret)
 
     # Features
 
@@ -278,17 +301,13 @@ class TurboActivate(object):
 
     # Utils
 
-    def is_date_valid(self, date=None):
+    def is_date_valid(self, date):
         """
         Check if the date is valid
         """
-        if not date:
-            to_check = datetime.utcnow().strftime("%Y-%m-%d %H-%M-%S")
-        else:
-            to_check = date
 
         try:
-            self._lib.TA_IsDateValid(self._handle, wstr(to_check), TA_HAS_NOT_EXPIRED)
+            self._lib.TA_IsDateValid(self._handle, wstr(date), TA_HAS_NOT_EXPIRED)
 
             return True
         except TurboActivateFlagsError as e:
@@ -342,7 +361,6 @@ class TurboActivate(object):
         self._lib.TA_ActivationRequestToFile.restype = validate_result
         self._lib.TA_ActivateFromFile.restype = validate_result
         self._lib.TA_GetExtraData.restype = validate_result
-        self._lib.TA_IsActivated.restype = validate_result
         self._lib.TA_TrialDaysRemaining.restype = validate_result
         self._lib.TA_ExtendTrial.restype = validate_result
         self._lib.TA_IsDateValid.restype = validate_result

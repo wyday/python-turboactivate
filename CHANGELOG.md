@@ -13,6 +13,12 @@ All notable changes to this project are documented in this file.
 * `is_genuine` and `is_genuine_ex` now return an IsGenuineResult instead of raising exceptions.
 * Remove useless helper function, and put it in the TurboActivate constructor.
 * Make the Python TurboActivate class match other object-oriented examples.
+* Remove unused imports in the example and in the TurboActivate class.
+* Change the default for `ta.deactivate()` to *not* delete the product key.
+* Split `ta.activate()` in 2 separate functions (online and offline activation).
+* Add ability to pass [extra data](https://wyday.com/limelm/help/extra-data/) to `ta.activate()`
+* Modify `ta.is_activated()` to raise errors when it needs to.
+* Modify `ta.is_date_valid()` to require a passed in date/time value.
 * Fix Linux support in Python 3.3+ (no longer uses the "linux2" identifier --
   now uses "linux"). Also add support for BSD, etc. and remove old cruft.
 * Make a first class language integration with LimeLM (meaning supported with
