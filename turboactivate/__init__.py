@@ -134,8 +134,6 @@ class TurboActivate(object):
         Activates the product on this computer. You must call set_product_key()
         with a valid product key or have used the TurboActivate wizard sometime
         before calling this function.
-        If activation_request_file is specified, then it gets the "activation request"
-        file for offline activation.
         """
 
         if extra_data:
@@ -155,11 +153,9 @@ class TurboActivate(object):
 
     def activation_request_to_file(self, filename, extra_data=""):
         """
-        Activates the product on this computer. You must call set_product_key()
-        with a valid product key or have used the TurboActivate wizard sometime
-        before calling this function.
-        If activation_request_file is specified, then it gets the "activation request"
-        file for offline activation.
+        Get the "activation request" file for offline activation. You must call
+        set_product_key() with a valid product key or have used the TurboActivate
+        Wizard sometime before calling this function.
         """
         args = [wstr(filename)]
 
