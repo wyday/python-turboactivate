@@ -118,9 +118,9 @@ class TurboActivate(object):
         """
 
         if erase_p_key is True:
-            args = c_char("1")
+            args = 1
         else:
-            args = c_char("0")
+            args = 0
 
         try:
             self._lib.TA_Deactivate(self._handle, args)
@@ -140,9 +140,9 @@ class TurboActivate(object):
         args = [wstr(filename)]
 
         if erase_p_key is True:
-            args.append(c_char("1"))
+            args.append(1)
         else:
-            args.append(c_char("0"))
+            args.append(0)
 
         try:
             self._lib.TA_DeactivationRequestToFile(self._handle, *args)
