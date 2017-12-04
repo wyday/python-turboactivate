@@ -108,24 +108,44 @@ class TurboActivate(object):
 
     # Activation status
 
-    def deactivate(self, erase_p_key=False, deactivation_request_file=""):
+    def deactivate(self, erase_p_key=False):
         """
-        Deactivates the product on this computer. Set erase_p_key to True to erase the stored
-        product key, False to keep the product key around. If you're using deactivate to let
-        a user move between computers it's almost always best to *not* erase the product
-        key. This way you can just use activate() when the user wants to reactivate
-        instead of forcing the user to re-enter their product key over-and-over again.
-        If deactivation_request_file is specified, then it gets the "deactivation request"
-        file for offline deactivation.
+       Deactivates the product on this computer. Set erasePkey to 1 to erase the stored
+       product key, 0 to keep the product key around. If you're using deactivate to let
+       a user move between computers it's almost always best to *not* erase the product
+       key. This way you can just use TA_Activate() when the user wants to reactivate
+       instead of forcing the user to re-enter their product key over-and-over again.
         """
-        e = 1 if erase_p_key else 0
-        fn = self._lib.TA_DeactivationRequestToFile if deactivation_request_file else self._lib.TA_Deactivate
-        args = [wstr(deactivation_request_file)] if deactivation_request_file else []
 
-        args.append(e)
+        if erase_p_key is True:
+            args = c_char("1")
+        else:
+            args = c_char("0")
 
         try:
-            fn(self._handle, *args)
+            self._lib.TA_Deactivate(self._handle, args)
+        except TurboActivateNotActivatedError:
+            return
+
+    def deactivation_request_to_file(self, filename, erase_p_key=False):
+        """
+        Get the "deactivation request" file for offline deactivation. Set erase_p_key to
+        True to erase the stored product key, False to keep the product key around. If
+        you're using deactivate to let a user move between computers it's almost always
+        best to *not* erase the product key. This way you can just use
+        activation_request_to_file() when the user wants to reactivate instead of forcing
+        the user to re-enter their product key over-and-over again.
+        """
+
+        args = [wstr(filename)]
+
+        if erase_p_key is True:
+            args.append(c_char("1"))
+        else:
+            args.append(c_char("0"))
+
+        try:
+            self._lib.TA_DeactivationRequestToFile(self._handle, *args)
         except TurboActivateNotActivatedError:
             return
 
