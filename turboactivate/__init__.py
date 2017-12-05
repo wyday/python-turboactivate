@@ -197,7 +197,7 @@ class TurboActivate(object):
     def activate_from_file(self, filename):
         """Activate from the "activation response" file for offline activation."""
         try:
-            self._lib.ActivateFromFile(self._handle, wstr(filename))
+            self._lib.TA_ActivateFromFile(self._handle, wstr(filename))
         except TurboActivateFailError as e:
             raise e
 
