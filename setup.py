@@ -3,20 +3,19 @@
 from distutils.core import setup
 
 setup(name="turboactivate",
-      version="1.0.4",
+      version="4.1.0",
       description="Python bindings for TurboActivate",
       url="https://github.com/develersrl/python-turboactivate/",
       author="Develer S.r.L",
       author_email="info@develer.com",
-      maintainer="Lorenzo Villani",
-      maintainer_email="lvillani@develer.com",
+      maintainer="wyDay, LLC",
+      maintainer_email="support@wyday.com",
       classifiers=[
-          'Development Status :: 4 - Beta',
+          'Development Status :: 5 - Production/Stable',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
           'Topic :: Software Development :: Libraries :: Python Modules',
       ],
       packages=["turboactivate"],
-      data_files=["README.rst"],
       long_description=open("README.rst").read()
 )

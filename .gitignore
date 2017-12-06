@@ -4,6 +4,11 @@ __pycache__/
 
 # C extensions
 *.so
+*.dylib
+*.dll
+
+# TurboActivate specific
+TurboActivate.dat
 
 # Distribution / packaging
 .Python
@@ -51,3 +56,4 @@ docs/_build/
 
 # PyBuilder
 target/
+/.idea/workspace.xml
