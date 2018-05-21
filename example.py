@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
                     if igr == IsGenuineResult.Genuine or igr == IsGenuineResult.GenuineFeaturesChanged:
                         print('Successfully reverified with the servers! You can now continue to use the app!')
-                        break;
+                        break
                     else:
                         print('Failed to reverify with the servers. ')
                         print('Make sure you\'re connected to the internet and that you\'re not blocking access to the activation servers. ')
@@ -165,6 +165,6 @@ if __name__ == "__main__":
     # See: https://wyday.com/limelm/help/license-features/
     #
     # feature_value = ta.get_feature_value("myFeature")
-    # print("the value of myFeaure is %s" % feature_value)
+    # print("the value of myFeature is %s" % feature_value)
 
     print("Hello world!")
