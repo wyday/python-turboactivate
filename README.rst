@@ -15,10 +15,10 @@ Installation
 
 We're working with devler to get our version in PyPi so this confusion will end soon.
 
-In the meantime, to use our version of the TurboActivate class, download it from here (or from [your LimeLM API page](https://wyday.com/limelm/api/#turboactivate)).
+In the meantime, to use our version of the TurboActivate class, download it from here (or from `your LimeLM API page <https://wyday.com/limelm/api/#turboactivate>`_).
 
 
 Usage
 -----
 
-We have a full example app and tutorial here: [Using TurboActivate with Python](https://wyday.com/limelm/help/using-turboactivate-with-python/)
+We have a full example app and tutorial here: `Using TurboActivate with Python <https://wyday.com/limelm/help/using-turboactivate-with-python/>`_
