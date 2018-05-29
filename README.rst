@@ -1,8 +1,6 @@
 Python bindings for LimeLM's TurboActivate
 ==========================================
 
-.. image:: http://img.shields.io/badge/license-MIT-blue.svg
-
 Python bindings for `LimeLM's <https://wyday.com/limelm/>`_ TurboActivate library.
 
 Development status: **stable**.
