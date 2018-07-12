@@ -39,15 +39,15 @@ from ctypes import (
 
 # Utilities
 
-wbuf = create_unicode_buffer if sys.platform == "win32" else create_string_buffer
+wbuf = create_unicode_buffer
 
-wstr_type = c_wchar_p if sys.platform == "win32" else c_char_p
+wstr_type = c_wchar_p 
 
 
 class wstr(wstr_type):
     def __init__(self, string):
         if (sys.version_info > (3, 0)):
-            super(wstr, self).__init__(string.encode('utf-8'))
+            super(wstr, self).__init__(string))
         else:
             super(wstr, self).__init__(string)
 
