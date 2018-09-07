@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented in this file.
 
-## 4.1.1 - 2017-07-XX
+## 4.1.x - 2018-09-XX
 
 * Works with latest version of TurboActivate (4.1.x) and newer.
 * Add support for Python 3.x+.
@@ -25,6 +25,7 @@ All notable changes to this project are documented in this file.
 * Make a first class language integration with LimeLM (meaning supported with
   the help of wyDay).
 * Changed the version scheme to match that of the TurboActivate API (it will now match, or slightly trail the TurboActivate API).
+* Add new error codes, remove unused error codes.
 
 
 ## 1.0.4 - 2016-01-27
