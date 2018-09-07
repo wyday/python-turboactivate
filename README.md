@@ -1,6 +1,6 @@
-# Python bindings for LimeLM's TurboActivate
+# Python integration for TurboActivate
 
-Python bindings for [LimeLM's](https://wyday.com/limelm/) TurboActivate library.
+Python integration for [LimeLM's](https://wyday.com/limelm/) [TurboActivate library](https://wyday.com/limelm/help/using-turboactivate/). This lets you add hardware-locked licensing (a.k.a. node-locked licensing) to your Python app.
 
 Development status: **stable**.
 

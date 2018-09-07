@@ -4,8 +4,9 @@ from distutils.core import setup
 
 setup(name="turboactivate",
       version="4.1.0",
-      description="Python bindings for TurboActivate",
-      url="https://github.com/wyattoday/python-turboactivate",
+      description="Python integration for the LimeLM TurboActivate library. This lets you add hardware-locked licensing (a.k.a. node-locked licensing) to your Python app.",
+      url="https://wyday.com/limelm/help/using-turboactivate-with-python/",
+      download_url="https://github.com/wyattoday/python-turboactivate",
       author="Develer S.r.L",
       author_email="info@develer.com",
       maintainer="wyDay, LLC",
@@ -20,5 +21,6 @@ setup(name="turboactivate",
 		  'Programming Language :: Python :: 3',
       ],
       packages=["turboactivate"],
-      long_description=open("README.md").read()
+      long_description=open("README.md").read(),
+      long_description_content_type="text/markdown"
 )
