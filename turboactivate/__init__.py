@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2013, 2014 Develer S.r.l. (https://www.develer.com/)
-# Copyright 2017 wyDay, LLC (https://wyday.com/)
+# Copyright 2018 wyDay, LLC (https://wyday.com/)
 #
-# Author: Lorenzo Villani <lvillani@develer.com>
-# Author: Riccardo Ferrazzo <rferrazz@develer.com>
-# Author: wyDay, LLC <support@wyday.com>
+# Current Author / maintainer:
+# 
+#   Author: wyDay, LLC <support@wyday.com>
+#
+#
+# Previous authors (and based on their fantastic work):
+#
+#   Author: Lorenzo Villani <lvillani@develer.com>
+#   Author: Riccardo Ferrazzo <rferrazz@develer.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -80,14 +86,14 @@ class TurboActivate(object):
         Gets the stored product key. NOTE: if you want to check if a product key is valid
         simply call is_product_key_valid().
         """
-        buf_size = 128
+        buf_size = 35
         buf = wbuf(buf_size)
 
         try:
             self._lib.TA_GetPKey(self._handle, buf, buf_size)
 
             return buf.value
-        except TurboActivateProductKeyError as e:
+        except TurboActivateProductKeyError:
             return None
 
     def check_and_save_pkey(self, product_key):
