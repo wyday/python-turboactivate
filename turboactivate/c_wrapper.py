@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2013, 2014 Develer S.r.l. (https://www.develer.com/)
-# Copyright 2017 wyDay, LLC (https://wyday.com/)
+# Copyright 2018 wyDay, LLC (https://wyday.com/)
 #
-# Author: Lorenzo Villani <lvillani@develer.com>
-# Author: Riccardo Ferrazzo <rferrazz@develer.com>
-# Author: wyDay, LLC <support@wyday.com>
+# Current Author / maintainer:
+# 
+#   Author: wyDay, LLC <support@wyday.com>
+#
+#
+# Previous authors (and based on their fantastic work):
+#
+#   Author: Lorenzo Villani <lvillani@develer.com>
+#   Author: Riccardo Ferrazzo <rferrazz@develer.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -90,6 +96,9 @@ TA_E_TRIAL_EXPIRED = 0x0000001E
 TA_E_MUST_SPECIFY_TRIAL_TYPE = 0x0000001F
 TA_E_MUST_USE_TRIAL = 0x00000020
 TA_E_NO_MORE_TRIALS_ALLOWED = 0x00000021
+TA_E_BROKEN_WMI = 0x00000022
+TA_E_INET_TIMEOUT = 0x00000023
+TA_E_INET_TLS = 0x00000024
 
 # Flags for the UseTrial() and CheckAndSavePKey() functions.
 
@@ -179,7 +188,7 @@ class ACTIVATE_OPTIONS(Structure):
 
 def load_library(path):
 
-    if sys.platform == 'win32':
+    if sys.platform == 'win32' or sys.platform == 'cygwin':
         return cdll.LoadLibrary(ospath.join(path, 'TurboActivate.dll'))
     elif sys.platform == 'darwin':
         return cdll.LoadLibrary(ospath.join(path, 'libTurboActivate.dylib'))
@@ -221,9 +230,7 @@ def validate_result(return_code):
     elif return_code == TA_E_COM:
         raise TurboActivateComError()
     elif return_code == TA_E_INET:
-        raise TurboActivateConnectionError()
-    elif return_code == TA_E_INET_DELAYED:
-        raise TurboActivateConnectionDelayedError()
+        raise TurboActivateInetError()
     elif return_code == TA_E_PERMISSION:
         raise TurboActivatePermissionError()
     elif return_code == TA_E_NO_MORE_DEACTIVATIONS:
@@ -248,6 +255,12 @@ def validate_result(return_code):
         raise TurboActivateNoMoreTrialsError()
     elif return_code == TA_E_INVALID_ARGS:
         raise TurboActivateInvalidArgsError()
+    elif return_code == TA_E_BROKEN_WMI:
+        raise TurboActivateBrokenWMIError()
+    elif return_code == TA_E_INET_TIMEOUT:
+        raise TurboActivateInetTimeoutError()
+    elif return_code == TA_E_INET_TLS:
+        raise TurboActivateInetTLSError()
 
     # Otherwise bail out and raise a generic exception
     raise TurboActivateError(return_code)
@@ -281,9 +294,23 @@ class TurboActivateNotActivatedError(TurboActivateError):
     pass
 
 
-class TurboActivateConnectionError(TurboActivateError):
+class TurboActivateInetError(TurboActivateError):
 
     """Connection to the server failed."""
+    pass
+
+
+class TurboActivateInetTimeoutError(TurboActivateInetError):
+
+    """The connection to the server timed out because a long period of time
+    elapsed since the last data was sent or received."""
+    pass
+
+
+class TurboActivateInetTLSError(TurboActivateInetError):
+
+    """The secure connection to the activation servers failed due to a TLS or
+    certificate error. More information here: https://wyday.com/limelm/help/faq/#internet-error"""
     pass
 
 
@@ -382,16 +409,6 @@ class TurboActivateExtraDataLongError(TurboActivateError):
     pass
 
 
-class TurboActivateConnectionDelayedError(TurboActivateError):
-
-    """
-    is_genuine() previously had a TA_E_INET error, and instead
-    of hammering the end-user's network, is_genuine() is waiting
-    5 hours before rechecking on the network.
-    """
-    pass
-
-
 class TurboActivateNoMoreDeactivationsError(TurboActivateError):
     """
     This product key had a limited number of allowed deactivations.
@@ -474,6 +491,16 @@ class TurboActivateNoMoreTrialsError(TurboActivateError):
     """
     In the LimeLM account either the trial days is set to 0, OR the account is set
     to not auto-upgrade and thus no more verified trials can be made.
+    """
+    pass
+
+
+class TurboActivateBrokenWMIError(TurboActivateError):
+    """
+    The WMI repository on the computer is broken. To fix the WMI repository
+    see the instructions here:
+
+    https://wyday.com/limelm/help/faq/#fix-broken-wmi
     """
     pass
 
