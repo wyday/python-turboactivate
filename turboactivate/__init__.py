@@ -70,15 +70,6 @@ class TurboActivate(object):
     # Public
     #
 
-    # Product management
-
-    def use_trial(self, verified=True):
-
-        flags = TA_VERIFIED_TRIAL | self._mode if verified else TA_UNVERIFIED_TRIAL | self._mode
-
-        self._lib.TA_UseTrial(self._handle, flags, None)
-
-
     # Product key
 
     def get_pkey(self):
@@ -293,6 +284,12 @@ class TurboActivate(object):
         validate_result(ret)
 
     # Trial
+
+    def use_trial(self, verified=True):
+
+        flags = TA_VERIFIED_TRIAL | self._mode if verified else TA_UNVERIFIED_TRIAL | self._mode
+
+        self._lib.TA_UseTrial(self._handle, flags, None)
 
     def trial_days_remaining(self, verified=True):
         """
