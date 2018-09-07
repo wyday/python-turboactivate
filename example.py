@@ -10,7 +10,8 @@ from turboactivate import (
 
 import sys
 
-# TODO: paste your Version GUID here.
+# TODO: go to the version page at LimeLM and
+# paste this GUID here
 TA_GUID = "18324776654b3946fc44a5f3.49025204"
 
 # TODO: paste the path to your dat file here
@@ -137,12 +138,13 @@ if __name__ == "__main__":
             # prompt the user for a product key
             pkey = input('Enter your product key to activate: ')
 
-            ta.check_and_save_pkey(pkey)
-
-            print("Product key saved successfully.")
+            if ta.check_and_save_pkey(pkey):
+                print("Product key saved successfully.")
+            else:
+                sys.exit("Product key was not valid for this product version")
 
         except TurboActivateError as e:
-            sys.exit("Product key was not valid for this product version: " + str(e))
+            sys.exit("Failed to check or save product key: " + str(e))
 
         # try to activate the product key
         try:
