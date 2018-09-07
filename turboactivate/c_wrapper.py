@@ -45,15 +45,20 @@ from ctypes import (
 
 # Utilities
 
-wbuf = create_unicode_buffer if sys.platform == "win32" else create_string_buffer
+# python 2.7 string.encode('utf-8') returns an str class
+# python 3.6 string.encode('utf-8') returns a bytes class
 
-wstr_type = c_wchar_p if sys.platform == "win32" else c_char_p
+is_win = if sys.platform == "win32" 
+
+wbuf = create_unicode_buffer if is_win else create_string_buffer
+
+wstr_type = c_wchar_p if is_win else c_char_p
 
 
 class wstr(wstr_type):
     def __init__(self, string):
         if (sys.version_info > (3, 0)):
-            super(wstr, self).__init__(string.encode('utf-8'))
+            super(wstr, self).__init__(string.encode('utf-8') if not is_win else string)
         else:
             super(wstr, self).__init__(string)
 
