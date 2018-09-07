@@ -48,7 +48,7 @@ from ctypes import (
 # python 2.7 string.encode('utf-8') returns an str class
 # python 3.6 string.encode('utf-8') returns a bytes class
 
-is_win = if sys.platform == "win32" 
+is_win = sys.platform == "win32" 
 
 wbuf = create_unicode_buffer if is_win else create_string_buffer
 
