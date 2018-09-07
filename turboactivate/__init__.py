@@ -98,7 +98,14 @@ class TurboActivate(object):
 
     def check_and_save_pkey(self, product_key):
         """Checks and saves the product key."""
-        self._lib.TA_CheckAndSavePKey(self._handle, wstr(product_key), self._mode)
+        ret = self._lib.TA_CheckAndSavePKey(self._handle, wstr(product_key), self._mode)
+
+        if ret == TA_OK:
+            return True
+        elif ret == TA_FAIL:
+            return False
+
+        validate_result(ret)
 
     def is_product_key_valid(self):
         """
@@ -128,10 +135,7 @@ class TurboActivate(object):
         else:
             args = 0
 
-        try:
-            self._lib.TA_Deactivate(self._handle, args)
-        except TurboActivateNotActivatedError:
-            return
+        self._lib.TA_Deactivate(self._handle, args)
 
     def deactivation_request_to_file(self, filename, erase_p_key=False):
         """
@@ -150,10 +154,7 @@ class TurboActivate(object):
         else:
             args.append(0)
 
-        try:
-            self._lib.TA_DeactivationRequestToFile(self._handle, *args)
-        except TurboActivateNotActivatedError:
-            return
+        self._lib.TA_DeactivationRequestToFile(self._handle, *args)
 
     def activate(self, extra_data=""):
         """
@@ -170,12 +171,7 @@ class TurboActivate(object):
         else:
             args = None
 
-        try:
-            self._lib.TA_Activate(self._handle, args)
-
-            return True
-        except TurboActivateError as e:
-            raise e
+        self._lib.TA_Activate(self._handle, args)
 
     def activation_request_to_file(self, filename, extra_data=""):
         """
@@ -193,19 +189,12 @@ class TurboActivate(object):
         else:
             args.append(None)
 
-        try:
-            self._lib.TA_ActivationRequestToFile(self._handle, *args)
-
-            return True
-        except TurboActivateError as e:
-            raise e
+        self._lib.TA_ActivationRequestToFile(self._handle, *args)
 
     def activate_from_file(self, filename):
         """Activate from the "activation response" file for offline activation."""
-        try:
-            self._lib.TA_ActivateFromFile(self._handle, wstr(filename))
-        except TurboActivateFailError as e:
-            raise e
+
+        self._lib.TA_ActivateFromFile(self._handle, wstr(filename))
 
     def get_extra_data(self):
         """Gets the extra data you passed in using activate()"""
@@ -378,7 +367,6 @@ class TurboActivate(object):
         self._lib.TA_PDetsFromPath.restype = validate_result
         self._lib.TA_UseTrial.restype = validate_result
         self._lib.TA_GetPKey.restype = validate_result
-        self._lib.TA_CheckAndSavePKey.restype = validate_result
         self._lib.TA_IsProductKeyValid.restype = validate_result
         self._lib.TA_DeactivationRequestToFile.restype = validate_result
         self._lib.TA_Deactivate.restype = validate_result
