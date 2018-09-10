@@ -5,17 +5,19 @@
 from turboactivate import (
     TurboActivate,
     IsGenuineResult,
-    TurboActivateError
+    TurboActivateError,
+    TA_USER,
+    TA_SYSTEM
 )
 
 import sys
 
 # TODO: go to the version page at LimeLM and
 # paste this GUID here
-TA_GUID = "18324776654b3946fc44a5f3.49025204"
+MY_TA_GUID = "18324776654b3946fc44a5f3.49025204"
 
 # TODO: paste the path to your dat file here
-TA_DAT_PATH = "TurboActivate.dat"
+MY_TA_DAT_PATH = "TurboActivate.dat"
 
 # Don't use 0 for either of these values.
 # We recommend 90, 14. But if you want to lower the values
@@ -37,7 +39,7 @@ if __name__ == "__main__":
     isGenuine = False
 
     try:
-        ta = TurboActivate(TA_DAT_PATH, TA_GUID)
+        ta = TurboActivate(MY_TA_DAT_PATH, MY_TA_GUID, TA_USER)
 
         # Check if we're activated, and every 90 days verify it with the activation servers
         # In this example we won't show an error if the activation was done offline

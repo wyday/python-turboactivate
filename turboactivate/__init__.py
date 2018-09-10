@@ -45,7 +45,7 @@ class IsGenuineResult:
 
 class TurboActivate(object):
 
-    def __init__(self, dat_file, guid, library_folder="", mode=TA_USER):
+    def __init__(self, dat_file, guid, mode = TA_USER, library_folder = ""):
         self._lib = load_library(library_folder)
         self._set_restype()
 
