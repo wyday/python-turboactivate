@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented in this file.
 
-## 4.1.x - 2018-09-XX
+## 4.0.2 - 2018-09-XX
 
 * Works with latest version of TurboActivate (4.1.x) and newer.
 * Add support for Python 3.x+.
@@ -26,6 +26,11 @@ All notable changes to this project are documented in this file.
   the help of wyDay).
 * Changed the version scheme to match that of the TurboActivate API (it will now match, or slightly trail the TurboActivate API).
 * Add new error codes, remove unused error codes.
+
+
+## 4.0.0 / 4.0.1 - 2018-01-31
+
+* Changes from Devler (some of which are in our 4.x branch). Unfortunately our 4.x branch has breaking changes from their 4.x branch.
 
 
 ## 1.0.4 - 2016-01-27

@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name="turboactivate",
-      version="4.1.0",
+      version="4.0.2",
       description="Python integration for the LimeLM TurboActivate library. This lets you add hardware-locked licensing (a.k.a. node-locked licensing) to your Python app.",
       url="https://wyday.com/limelm/help/using-turboactivate-with-python/",
       download_url="https://github.com/wyattoday/python-turboactivate",
