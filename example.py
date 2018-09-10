@@ -35,7 +35,6 @@ if __name__ == "__main__":
 
     # now begins the licensing bit of the code
     isGenuine = False
-    trial_days = 0
 
     try:
         ta = TurboActivate(TA_DAT_PATH, TA_GUID)
@@ -54,9 +53,7 @@ if __name__ == "__main__":
                      or gen_r == IsGenuineResult.InternetError
                      )
 
-        if isGenuine:
-            print('YourApp is activated and genuine! Enable any app features now.')
-        elif not isGenuine and ta.is_activated():
+        if not isGenuine and ta.is_activated():
 
             # There is still activation data on the computer, and it's valid.
 
@@ -97,6 +94,8 @@ if __name__ == "__main__":
         sys.exit("Failed to check if activated: " + str(e))
 
 
+
+    trial_days = 0
 
     # Get the number of trial days remaining and print them
     if not isGenuine:
