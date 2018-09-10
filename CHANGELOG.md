@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file.
 
 ## 4.0.2 - 2018-09-XX
 
-* Works with latest version of TurboActivate (4.1.x) and newer.
+* Works with latest version of TurboActivate (4.0.x) and newer.
 * Add support for Python 3.x+.
 * Completely re-vamp the example app to be more "copy-paste" ready for existing Python apps.
 * Handle an incorrect VersionGUID immediately in the TurboActivate constructor.
@@ -17,7 +17,7 @@ All notable changes to this project are documented in this file.
 * Remove unused imports in the example and in the TurboActivate class.
 * Change the default for `ta.deactivate()` to *not* delete the product key.
 * Split `ta.activate()` in 2 separate functions (online and offline activation).
-* Add ability to pass [extra data](https://wyday.com/limelm/help/extra-data/) to `ta.activate()`
+* Add ability to pass [extra data](https://wyday.com/limelm/help/extra-data/) to `ta.activate()` and `ta.use_trial`
 * Modify `ta.is_activated()` to raise errors when it needs to.
 * Modify `ta.is_date_valid()` to require a passed in date/time value.
 * Fix Linux support in Python 3.3+ (no longer uses the "linux2" identifier --

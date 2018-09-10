@@ -99,16 +99,20 @@ if __name__ == "__main__":
 
     trial_days = 0
 
+    # We're going to use verified trials:
+    # https://wyday.com/limelm/help/trials/#verified
+    verified_trial = True
+
     # Get the number of trial days remaining and print them
     if not isGenuine:
         try:
             # Start or re-validate the trial if it has already started.
             # This need to be called at least once before you can use
             # any other trial functions.
-            ta.use_trial(True)
+            ta.use_trial(verified_trial)
 
             # Get the number of trial days remaining.
-            trial_days = ta.trial_days_remaining()
+            trial_days = ta.trial_days_remaining(verified_trial)
 
             if trial_days > 0:
                 print("Trial days remaining %d" % trial_days)

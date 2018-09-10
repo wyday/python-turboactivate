@@ -286,11 +286,21 @@ class TurboActivate(object):
 
     # Trial
 
-    def use_trial(self, verified=True):
-
+    def use_trial(self, verified=True, extra_data=""):
+        """
+        Begins the trial the first time it's called. Calling it again will validate the trial
+        data hasn't been tampered with.
+        """
         flags = TA_VERIFIED_TRIAL | self._mode if verified else TA_UNVERIFIED_TRIAL | self._mode
 
-        self._lib.TA_UseTrial(self._handle, flags, None)
+        args = [flags]
+
+        if extra_data:
+            args.append(wstr(extra_data))
+        else:
+            args.append(None)
+
+        self._lib.TA_UseTrial(self._handle, *args)
 
     def trial_days_remaining(self, verified=True):
         """
@@ -307,9 +317,12 @@ class TurboActivate(object):
 
         return days.value
 
-    def extend_trial(self, extension_code):
+    def extend_trial(self, extension_code, verified=True):
         """Extends the trial using a trial extension created in LimeLM."""
-        self._lib.TA_ExtendTrial(self._handle, self._mode, wstr(extension_code))
+
+        flags = TA_VERIFIED_TRIAL | self._mode if verified else TA_UNVERIFIED_TRIAL | self._mode
+
+        self._lib.TA_ExtendTrial(self._handle, flags, wstr(extension_code))
 
     # Utils
 
