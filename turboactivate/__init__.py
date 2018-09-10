@@ -4,7 +4,7 @@
 # Copyright 2018 wyDay, LLC (https://wyday.com/)
 #
 # Current Author / maintainer:
-# 
+#
 #   Author: wyDay, LLC <support@wyday.com>
 #
 #
@@ -72,21 +72,6 @@ class TurboActivate(object):
 
     # Product key
 
-    def get_pkey(self):
-        """
-        Gets the stored product key. NOTE: if you want to check if a product key is valid
-        simply call is_product_key_valid().
-        """
-        buf_size = 35
-        buf = wbuf(buf_size)
-
-        try:
-            self._lib.TA_GetPKey(self._handle, buf, buf_size)
-
-            return buf.value
-        except TurboActivateProductKeyError:
-            return None
-
     def check_and_save_pkey(self, product_key):
         """Checks and saves the product key."""
         ret = self._lib.TA_CheckAndSavePKey(self._handle, wstr(product_key), self._mode)
@@ -109,6 +94,22 @@ class TurboActivate(object):
             return True
         except TurboActivateError:
             return False
+
+    def get_pkey(self):
+        """
+        Gets the stored product key. NOTE: if you want to check if a product key is valid
+        simply call is_product_key_valid().
+        """
+        buf_size = 35
+        buf = wbuf(buf_size)
+
+        try:
+            self._lib.TA_GetPKey(self._handle, buf, buf_size)
+
+            return buf.value
+        except TurboActivateProductKeyError:
+            return None
+
 
     # Activation status
 
