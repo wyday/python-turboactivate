@@ -6,6 +6,7 @@ from turboactivate import (
     TurboActivate,
     IsGenuineResult,
     TurboActivateError,
+    TurboActivateTrialExpiredError,
     TA_USER,
     TA_SYSTEM
 )
@@ -113,6 +114,8 @@ if __name__ == "__main__":
                 print("Trial days remaining %d" % trial_days)
             else:
                 print("There are no trial days remaining. You must activate now to continue to use this app.")
+        except TurboActivateTrialExpiredError as e:
+            print("There are no trial days remaining. You must activate now to continue to use this app.")
         except TurboActivateError as e:
             print("Failed to start the trial: " + str(e))
 
