@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented in this file.
 
-## 4.0.2 - 2018-09-XX
+## 4.0.2 - 2018-09-11
 
 * Works with latest version of TurboActivate (4.0.x) and newer.
 * Add support for Python 3.x+.
