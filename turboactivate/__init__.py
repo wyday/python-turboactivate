@@ -36,6 +36,7 @@ from ctypes import pointer, sizeof, c_uint32
 from turboactivate.c_wrapper import *
 
 import os
+import sys
 
 #
 # Object oriented interface
@@ -50,7 +51,12 @@ class TurboActivate(object):
     def __init__(self, guid, flags = TA_USER, dat_file_loc = "", library_folder = ""):
 
         # load the executing file's location
-        execFileLoc = os.path.dirname(os.path.abspath(sys.modules['__main__'].__file__))
+        if getattr(sys, 'frozen', False) :
+            # running in a bundle
+            execFileLoc = os.path.dirname(os.path.abspath(sys.executable))
+        else:
+            # running live
+            execFileLoc = os.path.dirname(os.path.abspath(sys.modules['__main__'].__file__))
 
         if not library_folder:
             library_folder = execFileLoc
