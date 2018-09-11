@@ -26,12 +26,12 @@ All notable changes to this project are documented in this file.
   the help of wyDay).
 * Changed the version scheme to match that of the TurboActivate API (it will now match, or slightly trail the TurboActivate API).
 * Add new error codes and remove unused error codes.
-* Load the native library files and TurboActivate.dat file from the location of the executing python script rather than the current working directory (CWD).
+* Load the native library files and TurboActivate.dat file from the location of the executing python script (or compiled executable) rather than the current working directory (CWD).
 
 
 ## 4.0.0 / 4.0.1 - 2018-01-31
 
-* Changes from Devler (some of which are in our 4.x branch). Unfortunately our 4.x branch has breaking changes from their 4.x branch.
+* Changes from Develer (some of which are in our 4.x branch). Unfortunately our 4.x branch has breaking changes from their 4.x branch.
 
 
 ## 1.0.4 - 2016-01-27
