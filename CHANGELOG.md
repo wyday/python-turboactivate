@@ -21,11 +21,11 @@ All notable changes to this project are documented in this file.
 * Modify `ta.is_activated()` to raise errors when it needs to.
 * Modify `ta.is_date_valid()` to require a passed in date/time value.
 * Fix Linux support in Python 3.3+ (no longer uses the "linux2" identifier --
-  now uses "linux"). Also add support for BSD, etc. and remove old cruft.
+  now uses "linux"). Also, add support for BSD, etc. and remove old cruft.
 * Make a first class language integration with LimeLM (meaning supported with
   the help of wyDay).
 * Changed the version scheme to match that of the TurboActivate API (it will now match, or slightly trail the TurboActivate API).
-* Add new error codes, remove unused error codes.
+* Add new error codes and remove unused error codes.
 * Load the native library files and TurboActivate.dat file from the location of the executing python script rather than the current working directory (CWD).
 
 
