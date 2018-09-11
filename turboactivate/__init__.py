@@ -35,6 +35,8 @@ from ctypes import pointer, sizeof, c_uint32
 
 from turboactivate.c_wrapper import *
 
+import os
+
 #
 # Object oriented interface
 #
@@ -45,15 +47,25 @@ class IsGenuineResult:
 
 class TurboActivate(object):
 
-    def __init__(self, dat_file, guid, mode = TA_USER, library_folder = ""):
+    def __init__(self, guid, flags = TA_USER, dat_file_loc = "", library_folder = ""):
+
+        # load the executing file's location
+        execFileLoc = os.path.dirname(os.path.abspath(sys.modules['__main__'].__file__))
+
+        if not library_folder:
+            library_folder = execFileLoc
+
+        # Form the full, absolute path to the TurboActivate.dat file
+        if not dat_file_loc:
+            dat_file_loc = os.path.join(execFileLoc, "TurboActivate.dat")
+
         self._lib = load_library(library_folder)
         self._set_restype()
 
-        self._mode = mode
-        self._dat_file = wstr(dat_file)
+        self._flags = flags
 
         try:
-            self._lib.TA_PDetsFromPath(self._dat_file)
+            self._lib.TA_PDetsFromPath(wstr(dat_file_loc))
         except TurboActivateFailError:
             # The dat file is already loaded
             pass
@@ -74,7 +86,7 @@ class TurboActivate(object):
 
     def check_and_save_pkey(self, product_key):
         """Checks and saves the product key."""
-        ret = self._lib.TA_CheckAndSavePKey(self._handle, wstr(product_key), self._mode)
+        ret = self._lib.TA_CheckAndSavePKey(self._handle, wstr(product_key), self._flags)
 
         if ret == TA_OK:
             return True
@@ -291,7 +303,7 @@ class TurboActivate(object):
         Begins the trial the first time it's called. Calling it again will validate the trial
         data hasn't been tampered with.
         """
-        flags = TA_VERIFIED_TRIAL | self._mode if verified else TA_UNVERIFIED_TRIAL | self._mode
+        flags = TA_VERIFIED_TRIAL | self._flags if verified else TA_UNVERIFIED_TRIAL | self._flags
 
         args = [flags]
 
@@ -310,7 +322,7 @@ class TurboActivate(object):
 
         You must have called "use_trial" o use this function
         """
-        flags = TA_VERIFIED_TRIAL | self._mode if verified else TA_UNVERIFIED_TRIAL | self._mode
+        flags = TA_VERIFIED_TRIAL | self._flags if verified else TA_UNVERIFIED_TRIAL | self._flags
         days = c_uint32(0)
 
         self._lib.TA_TrialDaysRemaining(self._handle, flags, pointer(days))
@@ -320,7 +332,7 @@ class TurboActivate(object):
     def extend_trial(self, extension_code, verified=True):
         """Extends the trial using a trial extension created in LimeLM."""
 
-        flags = TA_VERIFIED_TRIAL | self._mode if verified else TA_UNVERIFIED_TRIAL | self._mode
+        flags = TA_VERIFIED_TRIAL | self._flags if verified else TA_UNVERIFIED_TRIAL | self._flags
 
         self._lib.TA_ExtendTrial(self._handle, flags, wstr(extension_code))
 
