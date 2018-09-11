@@ -51,7 +51,7 @@ class TurboActivate(object):
     def __init__(self, guid, flags = TA_USER, dat_file_loc = "", library_folder = ""):
 
         # load the executing file's location
-        if getattr(sys, 'frozen', False) :
+        if getattr(sys, 'frozen', False):
             # running in a bundle
             execFileLoc = os.path.dirname(os.path.abspath(sys.executable))
         else:
@@ -61,7 +61,7 @@ class TurboActivate(object):
         if not library_folder:
             library_folder = execFileLoc
 
-        # Form the full, absolute path to the TurboActivate.dat file
+        # form the full, absolute path to the TurboActivate.dat file
         if not dat_file_loc:
             dat_file_loc = os.path.join(execFileLoc, "TurboActivate.dat")
 
