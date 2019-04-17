@@ -1,4 +1,0 @@
-{
-  "push": "git push \u0026\u0026 git push --tags \u0026\u0026 python setup.py clean sdist upload",
-  "version": "4.1.0"
-}

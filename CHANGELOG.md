@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## 4.0.3 - 2019-04-17
+
+* Fix Github issue #10 (AttributeError: 'bytes' object has no attribute 'encode'). Thanks @cbenhagen
+* Fix pip install failing, github issue #9
+* Remove old deprecated file from previous maintainer (not used).
+
+
 ## 4.0.2 - 2018-09-11
 
 * Works with latest version of TurboActivate (4.0.x) and newer.
