@@ -4,7 +4,7 @@
 # Copyright 2018 wyDay, LLC (https://wyday.com/)
 #
 # Current Author / maintainer:
-# 
+#
 #   Author: wyDay, LLC <support@wyday.com>
 #
 #
@@ -48,7 +48,7 @@ from ctypes import (
 # python 2.7 string.encode('utf-8') returns an str class
 # python 3.6 string.encode('utf-8') returns a bytes class
 
-is_win = sys.platform == "win32" 
+is_win = sys.platform == "win32"
 
 wbuf = create_unicode_buffer if is_win else create_string_buffer
 
@@ -57,7 +57,7 @@ wstr_type = c_wchar_p if is_win else c_char_p
 
 class wstr(wstr_type):
     def __init__(self, string):
-        if (sys.version_info > (3, 0)):
+        if sys.version_info > (3, 0) and isinstance(string, str):
             super(wstr, self).__init__(string.encode('utf-8') if not is_win else string)
         else:
             super(wstr, self).__init__(string)
