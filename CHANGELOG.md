@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented in this file.
 
+## 4.4.4 - 2021-05-xx
+
+* Remove unused "sandbox" flag and error code. Sandboxes are VMs.
+
 ## 4.0.3 - 2019-04-17
 
 * Fix Github issue #10 (AttributeError: 'bytes' object has no attribute 'encode'). Thanks @cbenhagen

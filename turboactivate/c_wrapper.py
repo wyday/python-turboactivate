@@ -84,7 +84,6 @@ TA_E_INSUFFICIENT_BUFFER = 0x0000000E
 TA_E_PERMISSION = 0x0000000F
 TA_E_INVALID_FLAGS = 0x00000010
 TA_E_IN_VM = 0x00000011
-TA_E_IN_SANDBOX = 0x00000022
 TA_E_EDATA_LONG = 0x00000012
 TA_E_INVALID_ARGS = 0x00000013
 TA_E_KEY_FOR_TURBOFLOAT = 0x00000014
@@ -147,20 +146,12 @@ Machine, then UseTrial() will return TA_E_IN_VM.
 TA_DISALLOW_VM = 0x00000004
 
 """
-Use the TA_DISALLOW_SANDBOX flag to explicitly forbid sandbox type applications
-(e.g. Sandboxie, Docker, etc.) that are used to get around trials or extend them
-forever.
-"""
-TA_DISALLOW_SANDBOX = 0x00000008
-
-"""
 Use this flag in TA_UseTrial() to tell TurboActivate to use client-side
 unverified trials. For more information about verified vs. unverified trials,
 see here: https://wyday.com/limelm/help/trials/
 Note: unverified trials are unsecured and can be reset by malicious customers.
 """
 TA_UNVERIFIED_TRIAL = 0x00000010
-
 
 """
 Use the TA_VERIFIED_TRIAL flag to use verified trials instead
