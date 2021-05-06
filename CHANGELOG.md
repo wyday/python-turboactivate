@@ -5,6 +5,7 @@ All notable changes to this project are documented in this file.
 ## 4.4.4 - 2021-05-xx
 
 * Remove unused "sandbox" flag and error code. Sandboxes are VMs.
+* Add the ta.get_version() function to get the version of the TurboActivate library currently loaded.
 
 ## 4.0.3 - 2019-04-17
 

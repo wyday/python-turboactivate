@@ -392,6 +392,23 @@ class TurboActivate(object):
         """
         self._lib.TA_SetCustomProxy(wstr(address))
 
+    def get_version(self):
+        """
+        Gets the version number of the currently used TurboActivate library.
+        This is a useful alternative for platforms which don't support file meta-data
+        (like Linux, FreeBSD, and other unix variants).
+
+        The version format is:  Major.Minor.Build.Revision
+        """
+        major = c_uint32(0)
+        minor = c_uint32(0)
+        build = c_uint32(0)
+        rev = c_uint32(0)
+
+        self._lib.TA_GetVersion(pointer(major), pointer(minor), pointer(build), pointer(rev))
+
+        return major.value, minor.value, build.value, rev.value
+
     def _set_restype(self):
         self._lib.TA_PDetsFromPath.restype = validate_result
         self._lib.TA_UseTrial.restype = validate_result
