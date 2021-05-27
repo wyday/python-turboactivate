@@ -8,7 +8,9 @@ from turboactivate import (
     TurboActivateError,
     TurboActivateTrialExpiredError,
     TA_USER,
-    TA_SYSTEM
+    TA_SYSTEM,
+    TA_CB_EXPIRED,
+    TA_CB_EXPIRED_FRAUD
 )
 
 import sys
@@ -19,6 +21,29 @@ import sys
 # Anything lower and you're just punishing legit users.
 DAYS_BETWEEN_CHECKS = 90
 GRACE_PERIOD_LENGTH = 14
+
+'''
+This function will be called by a separate background thread to notify
+your app of trial expiration (either naturally, or because of customer fraud).
+
+That means if you're displaying UI to your users you must ensure
+that any windows (or any resource sharing for that matter) are
+created in the right thread context or bad things might happen.
+Test this behavior well before releasing to your end-users.
+'''
+def trial_callback(status, unused):
+
+    if status == TA_CB_EXPIRED:
+        # TODO: disallow any features in your app.
+        print("The app trial period has expired")
+
+    elif status == TA_CB_EXPIRED_FRAUD:
+        # TODO: disallow any features in your app.
+        print("The lease has been dropped due to computer sleeping.")
+
+    else:
+        print("The app trial callback returned an unexpected status: ", status)
+
 
 if __name__ == "__main__":
 
@@ -105,7 +130,7 @@ if __name__ == "__main__":
             # Start or re-validate the trial if it has already started.
             # This need to be called at least once before you can use
             # any other trial functions.
-            ta.use_trial(verified_trial)
+            ta.use_trial(verified_trial, "", trial_callback)
 
             # Get the number of trial days remaining.
             trial_days = ta.trial_days_remaining(verified_trial)

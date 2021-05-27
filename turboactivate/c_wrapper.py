@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2013, 2014 Develer S.r.l. (https://www.develer.com/)
-# Copyright 2018 wyDay, LLC (https://wyday.com/)
+# Copyright 2021 wyDay, LLC (https://wyday.com/)
 #
 # Current Author / maintainer:
 #
@@ -36,11 +36,14 @@ from os import path as ospath
 from ctypes import (
     cdll,
     c_uint,
+    c_uint32,
+    c_void_p,
     c_char_p,
     c_wchar_p,
     Structure,
     create_string_buffer,
-    create_unicode_buffer
+    create_unicode_buffer,
+    CFUNCTYPE
 )
 
 # Utilities
@@ -166,6 +169,19 @@ TA_VERIFIED_TRIAL = 0x00000020
 TA_HAS_NOT_EXPIRED = 0x00000001
 
 
+# Possible callback statuses from the TrialCallbackType function:
+
+'''
+Callback-status value used when the trial has expired.
+'''
+TA_CB_EXPIRED = 0x00000000
+
+'''
+Callback-status value used when the trial has expired due to date/time fraud.
+'''
+TA_CB_EXPIRED_FRAUD = 0x00000001
+
+
 class GENUINE_OPTIONS(Structure):
     _fields_ = [
         ("nLength", c_uint),
@@ -181,6 +197,8 @@ class ACTIVATE_OPTIONS(Structure):
         ("sExtraData", wstr),
     ]
 
+
+TrialCallback = CFUNCTYPE(None, c_uint32, c_void_p)
 
 def load_library(path):
 

@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## 4.4.4.1 - 2021-05-27
+
+* Add `trial_callback` to the example, and the callback parameter to the ta.use_trial() function.
+* Code improvements. Remove some dead code.
+
 ## 4.4.4 - 2021-05-06
 
 * Remove unused "sandbox" flag and error code. Sandboxes are VMs.

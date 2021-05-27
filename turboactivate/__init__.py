@@ -31,7 +31,7 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 
-from ctypes import pointer, sizeof, c_uint32
+from ctypes import pointer, sizeof, c_uint32, c_void_p
 
 from turboactivate.c_wrapper import *
 
@@ -133,17 +133,14 @@ class TurboActivate(object):
 
     def deactivate(self, erase_p_key=False):
         """
-       Deactivates the product on this computer. Set erasePkey to 1 to erase the stored
-       product key, 0 to keep the product key around. If you're using deactivate to let
-       a user move between computers it's almost always best to *not* erase the product
-       key. This way you can just use TA_Activate() when the user wants to reactivate
-       instead of forcing the user to re-enter their product key over-and-over again.
+        Deactivates the product on this computer. Set erasePkey to 1 to erase the stored
+        product key, 0 to keep the product key around. If you're using deactivate to let
+        a user move between computers it's almost always best to *not* erase the product
+        key. This way you can just use TA_Activate() when the user wants to reactivate
+        instead of forcing the user to re-enter their product key over-and-over again.
         """
 
-        if erase_p_key is True:
-            args = 1
-        else:
-            args = 0
+        args = 1 if erase_p_key else 0
 
         self._lib.TA_Deactivate(self._handle, args)
 
@@ -304,7 +301,7 @@ class TurboActivate(object):
 
     # Trial
 
-    def use_trial(self, verified=True, extra_data=""):
+    def use_trial(self, verified=True, extra_data="", callback = None):
         """
         Begins the trial the first time it's called. Calling it again will validate the trial
         data hasn't been tampered with.
@@ -317,6 +314,14 @@ class TurboActivate(object):
             args.append(wstr(extra_data))
         else:
             args.append(None)
+
+        # Set the trial callback
+        if callback is not None:
+            # "cast" the native python function to TrialCallback type
+            # save it locally so that it acutally works when it's called
+            # back
+            self._callback = TrialCallback(callback)
+            self._lib.TA_SetTrialCallback(self._handle, self._callback, c_void_p(0))
 
         self._lib.TA_UseTrial(self._handle, *args)
 
@@ -425,3 +430,4 @@ class TurboActivate(object):
         self._lib.TA_IsDateValid.restype = validate_result
         self._lib.TA_SetCustomProxy.restype = validate_result
         self._lib.TA_SetCustomActDataPath.restype = validate_result
+        self._lib.TA_SetTrialCallback.restype = validate_result
